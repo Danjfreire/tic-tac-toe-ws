@@ -1,12 +1,12 @@
 import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { WebsocketService } from './websocket.service';
+import { v4 as uuid } from 'uuid';
 
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css',
 })
 export class AppComponent {
   wsService: WebsocketService = inject(WebsocketService);
@@ -20,6 +20,9 @@ export class AppComponent {
   }
 
   sendData() {
-    this.wsService.send({ message: 'Hello, world!' });
+    this.wsService.send({
+      type: 'join',
+      payload: { id: uuid(), displayName: 'John Doe' },
+    });
   }
 }
