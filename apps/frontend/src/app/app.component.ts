@@ -19,10 +19,11 @@ export class AppComponent {
     this.wsService.disconnect();
   }
 
-  sendData() {
+  join() {
+    const rand = Math.random() * 10;
     this.wsService.send({
       type: 'join',
-      payload: { id: uuid(), displayName: 'John Doe' },
+      payload: { id: uuid(), displayName: `John ${rand}` },
     });
   }
 }

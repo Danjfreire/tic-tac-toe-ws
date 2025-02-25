@@ -1,21 +1,28 @@
 import { WebSocketServer } from "ws";
-import { MessageHandler } from "./message-handler.js";
-import { PresenceService } from "./services/presence.service.js";
+import { WsRouter } from "./services/ws-router.service.js";
+import { registerHandlers } from "./handlers/register-handlers.js";
 
 const wss = new WebSocketServer({ port: 8080 });
 
-const presenceService = new PresenceService();
-const handler = new MessageHandler(presenceService);
+registerHandlers();
 
 wss.on("connection", (ws) => {
   ws.on("error", console.error);
 
   ws.on("message", (data) => {
-    handler.handle(ws, data);
+    const { type, payload } = JSON.parse(data as any);
+
+    if (!type || !payload) {
+      console.error("Invalid message format");
+      return;
+    }
+
+    WsRouter.instance.handle(type, ws, payload);
   });
 
   ws.on("close", () => {
     console.log("Connection closed on the server");
+    WsRouter.instance.handle("leave", ws, null);
   });
 
   ws.send("Hello! Message from server, that is recompiling and restarting!");

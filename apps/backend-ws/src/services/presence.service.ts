@@ -8,18 +8,26 @@ const UserSchema = z.object({
 
 type User = z.infer<typeof UserSchema>;
 
-export interface Connection {
-  ws: WebSocket;
-  user: User;
-}
-
 export class PresenceService {
-  activeUsers: Map<string, Connection>;
-  wsToUser: Map<WebSocket, string>;
+  private static _instance: PresenceService;
 
-  constructor() {
-    this.activeUsers = new Map();
+  private userToWs: Map<string, WebSocket>;
+  private wsToUser: Map<WebSocket, string>;
+
+  private constructor() {
+    console.log("this ran");
+    this.userToWs = new Map();
     this.wsToUser = new Map();
+    console.log(this.userToWs);
+    console.log(this.wsToUser);
+  }
+
+  public static get instance() {
+    if (!PresenceService._instance) {
+      PresenceService._instance = new PresenceService();
+    }
+
+    return PresenceService._instance;
   }
 
   public join(ws: WebSocket, data: any) {
@@ -37,14 +45,36 @@ export class PresenceService {
     }
 
     const user = res.data;
-    this.activeUsers.set(user.id, { ws, user });
+    this.userToWs.set(user.id, ws);
     this.wsToUser.set(ws, user.id);
 
     console.log(`User ${user.id}-${user.displayName} joined`);
-    console.log("Currently active users: ", this.activeUsers.size);
-
-    // Broadcast to all users
+    console.log("Currently active users: ", this.userToWs.size);
+    // Broadcast the current amount of users to all users
+    this.broadcastUserCount();
   }
 
-  public leave(ws: WebSocket) {}
+  public leave(ws: WebSocket) {
+    const userId = this.wsToUser.get(ws);
+
+    if (!userId) {
+      return;
+    }
+
+    this.userToWs.delete(userId);
+    this.wsToUser.delete(ws);
+
+    console.log(`User ${userId} left`);
+    this.broadcastUserCount();
+  }
+
+  private broadcastUserCount() {
+    const message = JSON.stringify({
+      type: "user-count",
+      payload: { count: this.userToWs.size },
+    });
+    for (const ws of this.userToWs.values()) {
+      ws.send(message);
+    }
+  }
 }
