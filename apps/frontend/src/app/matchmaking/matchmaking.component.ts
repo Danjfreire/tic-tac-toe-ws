@@ -22,4 +22,8 @@ export class MatchmakingComponent implements OnInit {
       }
     });
   }
+
+  disconnect() {
+    this.userService.leave();
+  }
 }

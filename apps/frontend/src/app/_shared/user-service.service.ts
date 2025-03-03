@@ -19,6 +19,7 @@ export class UserService {
 
   constructor() {
     this.wsService.on('join-success', this.onJoinSuccess.bind(this));
+    this.wsService.on('leave-success', this.onLeaveSuccess.bind(this));
     this.wsService.on('users-online', this.updateUserCount.bind(this));
   }
 
@@ -26,8 +27,16 @@ export class UserService {
     this.wsService.send('join', { id: uuid(), displayName: name });
   }
 
+  leave() {
+    this.wsService.send('leave', { id: this.user.value?.id });
+  }
+
   private onJoinSuccess(data: any) {
     this.user.next(data);
+  }
+
+  private onLeaveSuccess() {
+    this.user.next(null);
   }
 
   private onJoinFailure() {

@@ -16,11 +16,8 @@ export class PresenceService {
   private wsToUser: Map<WebSocket, string>;
 
   private constructor() {
-    console.log("this ran");
     this.userToWs = new Map();
     this.wsToUser = new Map();
-    console.log(this.userToWs);
-    console.log(this.wsToUser);
   }
 
   public static get instance() {
@@ -62,7 +59,7 @@ export class PresenceService {
     this.userToWs.delete(userId);
     this.wsToUser.delete(ws);
 
-    console.log(`User ${userId} left`);
+    this.leaveSuccess(ws, userId);
     this.broadcastUserCount();
   }
 
@@ -70,6 +67,15 @@ export class PresenceService {
     const serverMessage: ServerMessage = {
       type: "join-success",
       payload: { userId },
+    };
+
+    ws.send(JSON.stringify(serverMessage));
+  }
+
+  private leaveSuccess(ws: WebSocket, userId: string) {
+    const serverMessage: ServerMessage = {
+      type: "leave-success",
+      payload: userId,
     };
 
     ws.send(JSON.stringify(serverMessage));

@@ -12,8 +12,8 @@ wss.on("connection", (ws) => {
   ws.on("message", (data) => {
     const { type, payload } = JSON.parse(data as any);
 
-    if (!type || !payload) {
-      console.error("Invalid message format");
+    if (!type || payload == undefined) {
+      console.error("Invalid message format", type, payload);
       return;
     }
 
@@ -24,8 +24,6 @@ wss.on("connection", (ws) => {
     console.log("Connection closed on the server");
     WsRouter.instance.handle("leave", ws, null);
   });
-
-  ws.send("Hello! Message from server, that is recompiling and restarting!");
 });
 
 console.log("WebSocket server started on ws://localhost:8080");

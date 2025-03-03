@@ -3,5 +3,8 @@
 
   <div>Online users: {{ userService.userCount$ | async }}</div>
 
-  <button class="btn btn-primary">Find Match</button>
+  <button class="btn btn-primary mb-2 w-80">Find Match</button>
+  <button class="btn btn-primary text-sm" (click)="disconnect()">
+    Disconnect
+  </button>
 </div>
