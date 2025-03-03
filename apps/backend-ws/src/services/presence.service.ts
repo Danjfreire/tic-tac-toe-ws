@@ -1,13 +1,6 @@
 import WebSocket from "ws";
-import { z } from "zod";
 import { ServerMessage } from "@repo/types/message";
-
-const UserSchema = z.object({
-  id: z.string(),
-  displayName: z.string(),
-});
-
-type User = z.infer<typeof UserSchema>;
+import { validateUser } from "@repo/types/user";
 
 export class PresenceService {
   private static _instance: PresenceService;
@@ -30,9 +23,9 @@ export class PresenceService {
 
   public join(ws: WebSocket, data: any) {
     // try to parse the data
-    const res = UserSchema.safeParse(data);
+    const user = validateUser(data);
 
-    if (!res.success) {
+    if (!user) {
       return;
     }
 
@@ -41,7 +34,6 @@ export class PresenceService {
       return;
     }
 
-    const user = res.data;
     this.userToWs.set(user.id, ws);
     this.wsToUser.set(ws, user.id);
 
@@ -75,7 +67,7 @@ export class PresenceService {
   private leaveSuccess(ws: WebSocket, userId: string) {
     const serverMessage: ServerMessage = {
       type: "leave-success",
-      payload: userId,
+      payload: { userId },
     };
 
     ws.send(JSON.stringify(serverMessage));

@@ -40,7 +40,7 @@ export class UserService {
   }
 
   private onJoinFailure() {
-    //  handle this
+    // maybe handle this
   }
 
   private updateUserCount(data: any) {
