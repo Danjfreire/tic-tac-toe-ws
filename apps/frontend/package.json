@@ -23,7 +23,8 @@
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "uuid": "^11.1.0",
-    "zone.js": "~0.15.0"
+    "zone.js": "~0.15.0",
+    "@repo/types": "*"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^19.1.7",
@@ -32,6 +33,7 @@
     "@eslint/js": "^9.20.0",
     "@types/jasmine": "~5.1.0",
     "angular-eslint": "19.1.0",
+    "autoprefixer": "^10.4.20",
     "eslint": "^9.20.0",
     "globals": "^15.15.0",
     "jasmine-core": "~5.5.0",
@@ -40,6 +42,8 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^3.4.17",
     "typescript": "~5.7.2",
     "typescript-eslint": "8.23.0"
   }

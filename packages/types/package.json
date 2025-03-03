@@ -1,0 +1,18 @@
+{
+  "name": "@repo/types",
+  "type": "module",
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc"
+  },
+  "exports": {
+    "./message": {
+      "types": "./src/message-types.ts",
+      "default": "./dist/message-types.js"
+    }
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "*",
+    "typescript": "^5.0.0"
+  }
+}

@@ -1,1 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .btn {
+    @apply font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out;
+  }
+
+  .btn-primary {
+    @apply bg-white hover:bg-slate-200 border border-black;
+  }
+}
