@@ -81,9 +81,8 @@ export class WebsocketService {
     this.ws?.close();
   }
 
-  send(msgtype: ClientMessageType, data: any) {
+  send(message: ClientMessage) {
     if (this.ws?.readyState === WebSocket.OPEN) {
-      const message: ClientMessage = { type: msgtype, payload: data };
       this.ws.send(JSON.stringify(message));
     }
   }

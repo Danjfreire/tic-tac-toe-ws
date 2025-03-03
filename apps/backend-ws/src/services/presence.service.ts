@@ -71,9 +71,10 @@ export class PresenceService {
   }
 
   private joinSuccess(ws: WebSocket, userId: string) {
+    const user = this.userToData.get(userId);
     const serverMessage: ServerMessage = {
       type: "join-success",
-      payload: { userId },
+      payload: user,
     };
 
     ws.send(JSON.stringify(serverMessage));

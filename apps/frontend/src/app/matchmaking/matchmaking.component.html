@@ -3,8 +3,22 @@
 
   <div>Online users: {{ userService.userCount$ | async }}</div>
 
-  <button class="btn btn-primary mb-2 w-80">Find Match</button>
-  <button class="btn btn-primary text-sm" (click)="disconnect()">
-    Disconnect
-  </button>
+  @if (!findingMatch) {
+    <button class="btn btn-primary mb-2 w-80" (click)="findMatch()">
+      Find Match
+    </button>
+    <button class="btn btn-primary text-sm" (click)="disconnect()">
+      Disconnect
+    </button>
+  } @else {
+    <div class="text-2xl mb-4">Finding match...</div>
+    <div
+      class="flex border rounded-lg w-64 text-lg items-center justify-center p-2 mb-2"
+    >
+      {{ matchmakingTimer | duration }}
+    </div>
+    <button class="btn btn-primary text-sm" (click)="cancelMatchmaking()">
+      Cancel
+    </button>
+  }
 </div>

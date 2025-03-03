@@ -2,16 +2,14 @@ import { inject, Injectable } from '@angular/core';
 import { WebsocketService } from './websocket.service';
 import { v4 as uuid } from 'uuid';
 import { BehaviorSubject } from 'rxjs';
+import { User } from '@repo/types/user';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
   private wsService: WebsocketService = inject(WebsocketService);
-  private user = new BehaviorSubject<{
-    id: string;
-    displayName: string;
-  } | null>(null);
+  private user = new BehaviorSubject<User | null>(null);
   private userCount = new BehaviorSubject<number>(0);
 
   public userCount$ = this.userCount.asObservable();
@@ -29,12 +27,22 @@ export class UserService {
     });
   }
 
+  getUser() {
+    return this.user.value;
+  }
+
   join(name: string) {
-    this.wsService.send('join', { id: uuid(), displayName: name });
+    this.wsService.send({
+      type: 'join',
+      payload: { id: uuid(), displayName: name },
+    });
   }
 
   leave() {
-    this.wsService.send('leave', { id: this.user.value?.id });
+    this.wsService.send({
+      type: 'leave',
+      payload: { id: this.user.value?.id },
+    });
   }
 
   private onJoinSuccess(data: any) {

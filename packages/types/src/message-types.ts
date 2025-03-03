@@ -5,7 +5,8 @@ import { z } from "zod";
 export const VALID_CLIENT_MESSAGE_TYPES = [
   "join",
   "leave",
-  "find-match",
+  "start-matchmaking",
+  "cancel-matchmaking",
 ] as const;
 export const ClientMessageTypeSchema = z.enum(VALID_CLIENT_MESSAGE_TYPES);
 export type ClientMessageType = z.infer<typeof ClientMessageTypeSchema>;
@@ -23,7 +24,6 @@ export function validateClientMessage(data: unknown): ClientMessage | null {
     return res;
   } catch (error) {
     console.log(error);
-    console.log("Invalid message received from client, failed zed validation");
     return null;
   }
 }
@@ -33,6 +33,7 @@ export function validateClientMessage(data: unknown): ClientMessage | null {
 export const VALID_SERVER_MESSAGE_TYPES = [
   "join-success",
   "leave-success",
+  "found-match",
   "users-online",
   "match-started",
   "match-update",

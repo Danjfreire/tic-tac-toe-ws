@@ -2,8 +2,8 @@ import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { UserService } from '../_shared/user-service.service';
-import { WebsocketService } from '../_shared/websocket.service';
+import { UserService } from '../_shared/services/user-service.service';
+import { WebsocketService } from '../_shared/services/websocket.service';
 
 @Component({
   selector: 'app-join',
