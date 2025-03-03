@@ -2,7 +2,11 @@ import { z } from "zod";
 
 // CLIENT MESSAGES
 // ----------------------------------------------------------------------------------------------
-export const VALID_CLIENT_MESSAGE_TYPES = ["join", "leave"] as const;
+export const VALID_CLIENT_MESSAGE_TYPES = [
+  "join",
+  "leave",
+  "find-match",
+] as const;
 export const ClientMessageTypeSchema = z.enum(VALID_CLIENT_MESSAGE_TYPES);
 export type ClientMessageType = z.infer<typeof ClientMessageTypeSchema>;
 
@@ -30,6 +34,8 @@ export const VALID_SERVER_MESSAGE_TYPES = [
   "join-success",
   "leave-success",
   "users-online",
+  "match-started",
+  "match-update",
 ] as const;
 export const ServerMessageTypeSchema = z.enum(VALID_SERVER_MESSAGE_TYPES);
 export type ServerMessageType = z.infer<typeof ServerMessageTypeSchema>;

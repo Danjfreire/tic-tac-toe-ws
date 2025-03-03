@@ -13,6 +13,10 @@
     "./user": {
       "types": "./src/user-types.ts",
       "default": "./dist/user-types.js"
+    },
+    "./match": {
+      "types": "./src/match-types.ts",
+      "default": "./dist/match-types.js"
     }
   },
   "devDependencies": {

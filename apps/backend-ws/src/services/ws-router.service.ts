@@ -1,11 +1,15 @@
+import { ClientMessageType } from "@repo/types/message";
 import WebSocket from "ws";
 
 export class WsRouter {
   private static _instance: WsRouter;
-  private routerMap: Map<string, (ws: WebSocket, data: any) => void>;
+  private routeHandlers: Map<
+    ClientMessageType,
+    ((ws: WebSocket, data: any) => void)[]
+  >;
 
   private constructor() {
-    this.routerMap = new Map();
+    this.routeHandlers = new Map();
   }
 
   public static get instance() {
@@ -16,18 +20,27 @@ export class WsRouter {
     return WsRouter._instance;
   }
 
-  public handle(message: string, ws: WebSocket, data: any) {
-    const handler = this.routerMap.get(message);
+  public handle(message: ClientMessageType, ws: WebSocket, data: any) {
+    const handlers = this.routeHandlers.get(message);
 
-    if (!handler) {
+    if (!handlers) {
       console.error(`No handler found for message: ${message}`);
       return;
     }
 
-    handler(ws, data);
+    for (const handler of handlers) {
+      handler(ws, data);
+    }
   }
 
-  public on(message: string, cb: (ws: WebSocket, data: any) => void) {
-    this.routerMap.set(message, cb);
+  public on(
+    message: ClientMessageType,
+    cb: (ws: WebSocket, data: any) => void
+  ) {
+    if (!this.routeHandlers.has(message)) {
+      this.routeHandlers.set(message, []);
+    }
+
+    this.routeHandlers.get(message)?.push(cb);
   }
 }
