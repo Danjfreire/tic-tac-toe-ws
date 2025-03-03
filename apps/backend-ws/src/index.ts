@@ -1,6 +1,7 @@
 import { WebSocketServer } from "ws";
 import { WsRouter } from "./services/ws-router.service.js";
 import { registerHandlers } from "./handlers/register-handlers.js";
+import { validateClientMessage } from "@repo/types/message";
 
 const wss = new WebSocketServer({ port: 8080 });
 
@@ -10,18 +11,21 @@ wss.on("connection", (ws) => {
   ws.on("error", console.error);
 
   ws.on("message", (data) => {
-    const { type, payload } = JSON.parse(data as any);
+    const parsedData = JSON.parse(data.toString());
+    const message = validateClientMessage(parsedData);
 
-    if (!type || payload == undefined) {
-      console.error("Invalid message format", type, payload);
+    if (!message) {
+      console.error("Invalid message received from client");
       return;
     }
 
-    WsRouter.instance.handle(type, ws, payload);
+    WsRouter.instance.handle(message.type, ws, message.payload);
   });
 
   ws.on("close", () => {
-    console.log("Connection closed on the server");
+    console.log(
+      "Connection closed on the server, should leave the room, and show reconnect flow"
+    );
     WsRouter.instance.handle("leave", ws, null);
   });
 });

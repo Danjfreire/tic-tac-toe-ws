@@ -13,10 +13,13 @@ import {
 })
 export class WebsocketService {
   private ws: WebSocket | undefined;
+  private connectionClosedByServer = new BehaviorSubject<boolean>(false);
   private connectionStatus = new BehaviorSubject<boolean>(false);
   private handlers = new Map<ServerMessageType, ((data: any) => void)[]>();
 
   public status$ = this.connectionStatus.asObservable();
+  public connectionClosedByServer$ =
+    this.connectionClosedByServer.asObservable();
 
   constructor() {
     this.connect();
@@ -35,12 +38,15 @@ export class WebsocketService {
 
     this.ws.onopen = () => {
       this.connectionStatus.next(true);
+      this.connectionClosedByServer.next(false);
       console.log('connected to websocket server');
     };
 
     this.ws.onclose = () => {
       this.connectionStatus.next(false);
       console.log('disconnected from websocket server');
+      console.log('connection closed by server');
+      this.connectionClosedByServer.next(true);
     };
 
     this.ws.onerror = (error) => {

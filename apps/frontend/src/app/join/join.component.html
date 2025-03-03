@@ -18,6 +18,11 @@
       Join
     </button>
   } @else {
-    <div>Connecting...</div>
+    @if (wsService.connectionClosedByServer$ | async) {
+      <!-- manual reconnect -->
+      <button class="btn btn-primary" (click)="reconnect()">Reconnect</button>
+    } @else {
+      <div>Connecting...</div>
+    }
   }
 </div>

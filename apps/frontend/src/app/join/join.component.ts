@@ -26,6 +26,10 @@ export class JoinComponent implements OnInit {
     });
   }
 
+  public reconnect() {
+    this.wsService.connect();
+  }
+
   public join() {
     if (this.name.length === 0) return;
     this.userService.join(this.name);

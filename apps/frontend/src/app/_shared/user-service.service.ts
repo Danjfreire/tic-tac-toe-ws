@@ -21,6 +21,12 @@ export class UserService {
     this.wsService.on('join-success', this.onJoinSuccess.bind(this));
     this.wsService.on('leave-success', this.onLeaveSuccess.bind(this));
     this.wsService.on('users-online', this.updateUserCount.bind(this));
+
+    this.wsService.status$.subscribe((connected) => {
+      if (connected === false) {
+        this.onLeaveSuccess();
+      }
+    });
   }
 
   join(name: string) {
