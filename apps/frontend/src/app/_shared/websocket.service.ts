@@ -1,6 +1,12 @@
-import { Injectable } from '@angular/core';
+/* eslint-disable no-unused-vars */
+import { Injectable, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { MessageType } from '@repo/types/message';
+import {
+  ClientMessage,
+  ClientMessageType,
+  ServerMessage,
+  ServerMessageType,
+} from '@repo/types/message';
 
 @Injectable({
   providedIn: 'root',
@@ -8,12 +14,20 @@ import { MessageType } from '@repo/types/message';
 export class WebsocketService {
   private ws: WebSocket | undefined;
   private connectionStatus = new BehaviorSubject<boolean>(false);
+  private handlers = new Map<ServerMessageType, ((data: any) => void)[]>();
 
   public status$ = this.connectionStatus.asObservable();
 
-  // eslint-disable-next-line no-unused-vars
-  on(msgType: MessageType, callback: (data: any) => void): void {
-    console.log(msgType, callback);
+  constructor() {
+    this.connect();
+  }
+
+  on(msgType: ServerMessageType, callback: (data: any) => void): void {
+    if (!this.handlers.has(msgType)) {
+      this.handlers.set(msgType, []);
+    }
+
+    this.handlers.get(msgType)?.push(callback);
   }
 
   connect(url = 'ws://localhost:8080'): void {
@@ -35,6 +49,25 @@ export class WebsocketService {
 
     this.ws.onmessage = (message) => {
       console.log('received message:', message.data);
+      const serverMessage = JSON.parse(message.data) as ServerMessage;
+
+      // maybe validate using zod or something
+      const type = serverMessage.type as ServerMessageType;
+      const data = serverMessage.payload;
+      if (!type || !data) {
+        console.error('received invalid message from server:', serverMessage);
+        return;
+      }
+
+      const handlers = this.handlers.get(serverMessage.type);
+      if (!handlers || handlers?.length === 0) {
+        console.log('no handlers for message type:', serverMessage.type);
+        return;
+      }
+
+      for (const handler of handlers) {
+        handler(data);
+      }
     };
   }
 
@@ -42,9 +75,10 @@ export class WebsocketService {
     this.ws?.close();
   }
 
-  send(data: any) {
+  send(msgtype: ClientMessageType, data: any) {
     if (this.ws?.readyState === WebSocket.OPEN) {
-      this.ws.send(JSON.stringify(data));
+      const message: ClientMessage = { type: msgtype, payload: data };
+      this.ws.send(JSON.stringify(message));
     }
   }
 }

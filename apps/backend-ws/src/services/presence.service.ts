@@ -1,5 +1,6 @@
 import WebSocket from "ws";
 import { z } from "zod";
+import { ServerMessage } from "@repo/types/message";
 
 const UserSchema = z.object({
   id: z.string(),
@@ -40,7 +41,6 @@ export class PresenceService {
 
     // check if the user has already joined
     if (this.wsToUser.has(ws)) {
-      console.log("This user has already joined, skipping...");
       return;
     }
 
@@ -48,9 +48,7 @@ export class PresenceService {
     this.userToWs.set(user.id, ws);
     this.wsToUser.set(ws, user.id);
 
-    console.log(`User ${user.id}-${user.displayName} joined`);
-    console.log("Currently active users: ", this.userToWs.size);
-    // Broadcast the current amount of users to all users
+    this.joinSuccess(ws, user.id);
     this.broadcastUserCount();
   }
 
@@ -68,11 +66,24 @@ export class PresenceService {
     this.broadcastUserCount();
   }
 
+  private joinSuccess(ws: WebSocket, userId: string) {
+    const serverMessage: ServerMessage = {
+      type: "join-success",
+      payload: { userId },
+    };
+
+    ws.send(JSON.stringify(serverMessage));
+  }
+
   private broadcastUserCount() {
-    const message = JSON.stringify({
-      type: "user-count",
+    const serverMessage: ServerMessage = {
+      type: "users-online",
       payload: { count: this.userToWs.size },
-    });
+    };
+
+    // Maybe add some logic to debounce the broadcast if too many users are joining/leaving
+    const message = JSON.stringify(serverMessage);
+
     for (const ws of this.userToWs.values()) {
       ws.send(message);
     }

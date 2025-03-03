@@ -16,7 +16,8 @@
     "bufferutil": "^4.0.9"
   },
   "dependencies": {
-    "ws": "^8.18.1"
+    "ws": "^8.18.1",
+    "@repo/types": "*"
   },
   "devDependencies": {
     "@types/node": "^22.13.5",

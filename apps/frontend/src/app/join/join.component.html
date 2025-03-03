@@ -1,14 +1,23 @@
 <div class="w-full h-screen flex flex-col items-center justify-center">
   <div class="text-4xl mb-12">Tic-Tac-Toe WS</div>
 
-  <input
-    class="border border-gray-400 p-2 mb-2 rounded-lg"
-    type="text"
-    placeholder="Enter your username"
-    [(ngModel)]="name"
-  />
+  @if (wsService.status$ | async) {
+    <input
+      class="border border-gray-400 p-2 mb-2 rounded-lg"
+      type="text"
+      placeholder="Enter your username"
+      [(ngModel)]="name"
+    />
 
-  <button class="btn btn-primary" type="button" (click)="connect()">
-    Join
-  </button>
+    <button
+      class="btn btn-primary"
+      [disabled]="name.length === 0"
+      type="button"
+      (click)="join()"
+    >
+      Join
+    </button>
+  } @else {
+    <div>Connecting...</div>
+  }
 </div>

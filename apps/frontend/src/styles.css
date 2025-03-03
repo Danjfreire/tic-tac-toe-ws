@@ -8,6 +8,10 @@
     @apply font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out;
   }
 
+  .btn:disabled {
+    @apply opacity-50 cursor-not-allowed bg-gray-300 hover:bg-gray-300 border-gray-400 text-gray-600;
+  }
+
   .btn-primary {
     @apply bg-white hover:bg-slate-200 border border-black;
   }

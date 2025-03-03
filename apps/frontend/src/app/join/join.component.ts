@@ -1,30 +1,33 @@
-import { Component, inject } from '@angular/core';
-import { WebsocketService } from '../_shared/websocket.service';
-import { v4 as uuid } from 'uuid';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { Router, RouterModule } from '@angular/router';
+import { UserService } from '../_shared/user-service.service';
+import { WebsocketService } from '../_shared/websocket.service';
 
 @Component({
   selector: 'app-join',
-  imports: [FormsModule],
+  imports: [FormsModule, CommonModule, RouterModule],
   templateUrl: './join.component.html',
 })
-export class JoinComponent {
-  wsService: WebsocketService = inject(WebsocketService);
+export class JoinComponent implements OnInit {
+  userService = inject(UserService);
+  wsService = inject(WebsocketService);
+  router = inject(Router);
+
   name = '';
 
-  connect() {
-    this.wsService.connect();
-  }
-
-  disconnect() {
-    this.wsService.disconnect();
-  }
-
-  join() {
-    const rand = Math.random() * 10;
-    this.wsService.send({
-      type: 'join',
-      payload: { id: uuid(), displayName: `John ${rand}` },
+  ngOnInit(): void {
+    // Wait for the user to join before navigating to the matchmaking page
+    this.userService.user$.subscribe((user) => {
+      if (user != null) {
+        this.router.navigate(['/matchmaking']);
+      }
     });
+  }
+
+  public join() {
+    if (this.name.length === 0) return;
+    this.userService.join(this.name);
   }
 }
