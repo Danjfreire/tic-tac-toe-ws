@@ -17,6 +17,10 @@ export class MatchService {
     this.wsService.on(SERVER_MESSAGE.MATCH_START, this.onMatchStart.bind(this));
   }
 
+  public getMatch() {
+    return this.match.value;
+  }
+
   private onMatchStart(data: any) {
     const matchState = validateMatchState(data);
 

@@ -1,1 +1,16 @@
-<p>match works!</p>
+<div class="flex justify-center items-center w-full">
+  <div class="container">
+    <!-- scoreboard -->
+    <div class="flex border p-4 rounded-lg font-semibold text-lg">
+      <div class="w-16">{{ match.player1.displayName }}</div>
+      <div class="flex flex-1 items-center justify-center">
+        <span>{{ timer | duration }}</span>
+      </div>
+      <div class="w-16">{{ match.player2.displayName }}</div>
+    </div>
+
+    <!-- board -->
+
+    <!-- chat -->
+  </div>
+</div>
