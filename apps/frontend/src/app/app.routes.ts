@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { JoinComponent } from './join/join.component';
 import { MatchmakingComponent } from './matchmaking/matchmaking.component';
+import { MatchComponent } from './match/match.component';
 
 export const routes: Routes = [
   {
@@ -10,6 +11,10 @@ export const routes: Routes = [
   {
     path: 'matchmaking',
     component: MatchmakingComponent,
+  },
+  {
+    path: 'match',
+    component: MatchComponent,
   },
   {
     path: '',

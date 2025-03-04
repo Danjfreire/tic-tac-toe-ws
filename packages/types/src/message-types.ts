@@ -38,7 +38,10 @@ export const SERVER_MESSAGE = {
   USERS_ONLINE: "system:users-online",
   MATCHMAKING_UPDATE: "matchmaking:update",
   MATCHMAKING_FOUND: "matchmaking:found",
-  MATCH_STARTED: "match:started",
+  MATCH_UPDATE: "match:update",
+  MATCH_START: "match:start",
+  MATCH_END: "match:end",
+  MATCH_TEST: "match:test",
 } as const;
 
 export const ServerMessageTypeSchema = z.nativeEnum(SERVER_MESSAGE);

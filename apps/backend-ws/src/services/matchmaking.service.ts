@@ -7,6 +7,7 @@ import {
   MatchConfirmation,
   validateMatchmakingAccept,
 } from "@repo/types/matchmaking";
+import { MatchService } from "./match.service.js";
 
 export class MatchmakingService {
   private static _instance: MatchmakingService;
@@ -76,8 +77,7 @@ export class MatchmakingService {
 
     // start the match
     if (matchConfirmation.playersAccepted.length === 2) {
-      // TODO
-      console.log("starting match", matchConfirmation);
+      MatchService.instance.startMatch(matchConfirmation);
       return;
     }
   }

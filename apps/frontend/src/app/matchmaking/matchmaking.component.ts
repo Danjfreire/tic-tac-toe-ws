@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { MatchMakingService } from '../_shared/services/matchmaking.service';
 import { DurationPipe } from '../_shared/pipes/duration.pipe';
 import { User } from '@repo/types/user';
+import { MatchService } from '../_shared/services/match.service';
 
 @Component({
   selector: 'app-matchmaking',
@@ -14,6 +15,7 @@ import { User } from '@repo/types/user';
 export class MatchmakingComponent implements OnInit {
   userService = inject(UserService);
   matchMakingService = inject(MatchMakingService);
+  matchService = inject(MatchService);
   router = inject(Router);
 
   user!: User;
@@ -29,6 +31,13 @@ export class MatchmakingComponent implements OnInit {
         return;
       }
       this.router.navigate(['/join']);
+    });
+
+    // if the user starts a match, redirect to the match page
+    this.matchService.activeMatch.subscribe((match) => {
+      if (match !== null) {
+        this.router.navigate(['/match']);
+      }
     });
 
     // reset matchmaking if the user misses the match

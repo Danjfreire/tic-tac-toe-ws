@@ -29,7 +29,6 @@ export class MatchMakingService {
   public matchFound$ = this.matchFound.asObservable();
 
   constructor() {
-    console.log('Server Messages is', SERVER_MESSAGE);
     this.wsService.on(
       SERVER_MESSAGE.MATCHMAKING_UPDATE,
       this.onMatchmakingUpdate.bind(this),
@@ -73,7 +72,6 @@ export class MatchMakingService {
   }
 
   private onMatchmakingUpdate(data: any) {
-    console.log('matchmaking update');
     const confirmation = validateMatchConfirmation(data);
 
     if (!confirmation) return;

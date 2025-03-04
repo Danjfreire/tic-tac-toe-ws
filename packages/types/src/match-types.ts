@@ -9,3 +9,13 @@ const MatchStateSchema = z.object({
 });
 
 export type MatchState = z.infer<typeof MatchStateSchema>;
+
+export function validateMatchState(data: unknown): MatchState | null {
+  try {
+    const res = MatchStateSchema.parse(data);
+    return res;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+}
