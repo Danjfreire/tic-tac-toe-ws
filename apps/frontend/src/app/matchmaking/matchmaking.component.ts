@@ -17,10 +17,9 @@ export class MatchmakingComponent implements OnInit {
   router = inject(Router);
 
   user!: User;
-  intervalId!: number;
+  matchmakingIntervalId!: number;
   matchmakingTimer = 0;
   findingMatch = false;
-  onlineUsers = 0;
 
   ngOnInit(): void {
     // if the user is not logged in, redirect to the join page
@@ -31,24 +30,40 @@ export class MatchmakingComponent implements OnInit {
       }
       this.router.navigate(['/join']);
     });
+
+    // reset matchmaking if the user misses the match
+    this.matchMakingService.matchFound$.subscribe((match) => {
+      if (!match) {
+        this.resetMatchmaking();
+      }
+    });
   }
 
   findMatch() {
+    this.resetMatchmaking();
     this.matchMakingService.findMatch(this.user);
     this.findingMatch = true;
-    this.intervalId = window.setInterval(() => {
+    this.matchmakingIntervalId = window.setInterval(() => {
       this.matchmakingTimer++;
     }, 1000);
   }
 
   cancelMatchmaking() {
-    this.findingMatch = false;
-    clearInterval(this.intervalId);
-    this.matchmakingTimer = 0;
     this.matchMakingService.cancelMatchmaking(this.user);
+    this.resetMatchmaking();
+  }
+
+  acceptMatch(matchId: string) {
+    console.log('Trying to start match with id', matchId);
   }
 
   disconnect() {
     this.userService.leave();
+  }
+
+  private resetMatchmaking() {
+    this.findingMatch = false;
+    clearInterval(this.matchmakingIntervalId);
+    this.matchmakingTimer = 0;
   }
 }

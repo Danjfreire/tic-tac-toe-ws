@@ -2,13 +2,14 @@ import { z } from "zod";
 
 // CLIENT MESSAGES
 // ----------------------------------------------------------------------------------------------
-export const VALID_CLIENT_MESSAGE_TYPES = [
-  "join",
-  "leave",
-  "start-matchmaking",
-  "cancel-matchmaking",
-] as const;
-export const ClientMessageTypeSchema = z.enum(VALID_CLIENT_MESSAGE_TYPES);
+export const CLIENT_MESSAGE = {
+  JOIN: "connection:join",
+  LEAVE: "connection:leave",
+  MATCHMAKING_START: "matchmaking:start",
+  MATCHMAKING_CANCEL: "matchmaking:cancel",
+} as const;
+
+export const ClientMessageTypeSchema = z.nativeEnum(CLIENT_MESSAGE);
 export type ClientMessageType = z.infer<typeof ClientMessageTypeSchema>;
 
 export const ClientMessageSchema = z.object({
@@ -30,15 +31,15 @@ export function validateClientMessage(data: unknown): ClientMessage | null {
 
 // SERVER MESSAGES
 // ----------------------------------------------------------------------------------------------
-export const VALID_SERVER_MESSAGE_TYPES = [
-  "join-success",
-  "leave-success",
-  "found-match",
-  "users-online",
-  "match-started",
-  "match-update",
-] as const;
-export const ServerMessageTypeSchema = z.enum(VALID_SERVER_MESSAGE_TYPES);
+export const SERVER_MESSAGE = {
+  JOINED: "connection:joined",
+  LEFT: "connection:left",
+  USERS_ONLINE: "system:users-online",
+  MATCHMAKING_FOUND: "matchmaking:found",
+  MATCH_STARTED: "match:started",
+} as const;
+
+export const ServerMessageTypeSchema = z.nativeEnum(SERVER_MESSAGE);
 export type ServerMessageType = z.infer<typeof ServerMessageTypeSchema>;
 
 export const ServerMessageSchema = z.object({

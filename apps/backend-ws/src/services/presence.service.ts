@@ -1,5 +1,5 @@
 import WebSocket from "ws";
-import { ServerMessage } from "@repo/types/message";
+import { SERVER_MESSAGE, ServerMessage } from "@repo/types/message";
 import { User, validateUser } from "@repo/types/user";
 
 export class PresenceService {
@@ -73,7 +73,7 @@ export class PresenceService {
   private joinSuccess(ws: WebSocket, userId: string) {
     const user = this.userToData.get(userId);
     const serverMessage: ServerMessage = {
-      type: "join-success",
+      type: SERVER_MESSAGE.JOINED,
       payload: user,
     };
 
@@ -82,7 +82,7 @@ export class PresenceService {
 
   private leaveSuccess(ws: WebSocket, userId: string) {
     const serverMessage: ServerMessage = {
-      type: "leave-success",
+      type: SERVER_MESSAGE.LEFT,
       payload: { userId },
     };
 
@@ -91,7 +91,7 @@ export class PresenceService {
 
   private broadcastUserCount() {
     const serverMessage: ServerMessage = {
-      type: "users-online",
+      type: SERVER_MESSAGE.USERS_ONLINE,
       payload: { count: this.userToWs.size },
     };
 

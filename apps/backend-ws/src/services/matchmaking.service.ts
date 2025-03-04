@@ -1,9 +1,8 @@
 import { validateUser } from "@repo/types/user";
 import WebSocket from "ws";
-import { MatchService } from "./match.service.js";
 import { v4 as uuid } from "uuid";
 import { PresenceService } from "./presence.service.js";
-import { ServerMessage } from "@repo/types/message";
+import { SERVER_MESSAGE, ServerMessage } from "@repo/types/message";
 
 interface MatchConfirmation {
   id: string;
@@ -77,7 +76,7 @@ export class MatchmakingService {
     this.pendingMatchConfirmations.set(matchId, matchConfirmation);
     const sockets = [player1.ws, player2.ws];
     const message: ServerMessage = {
-      type: "found-match",
+      type: SERVER_MESSAGE.MATCHMAKING_FOUND,
       payload: {
         matchId,
       },
@@ -86,5 +85,13 @@ export class MatchmakingService {
     for (const socket of sockets) {
       socket.send(messageString);
     }
+
+    // clean up confirmation if it is not accepted in time
+    setTimeout(() => {
+      if (this.pendingMatchConfirmations.has(matchId)) {
+        console.log("match confirmation expired", matchId);
+        this.pendingMatchConfirmations.delete(matchId);
+      }
+    }, 20000);
   }
 }

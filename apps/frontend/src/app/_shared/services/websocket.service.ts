@@ -1,9 +1,8 @@
 /* eslint-disable no-unused-vars */
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import {
   ClientMessage,
-  ClientMessageType,
   ServerMessage,
   ServerMessageType,
 } from '@repo/types/message';

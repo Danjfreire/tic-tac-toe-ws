@@ -1,7 +1,7 @@
 import { WebSocketServer } from "ws";
 import { WsRouter } from "./services/ws-router.service.js";
 import { registerHandlers } from "./handlers/register-handlers.js";
-import { validateClientMessage } from "@repo/types/message";
+import { CLIENT_MESSAGE, validateClientMessage } from "@repo/types/message";
 
 const wss = new WebSocketServer({ port: 8080 });
 
@@ -26,7 +26,7 @@ wss.on("connection", (ws) => {
     console.log(
       "Connection closed on the server, should leave the room, and show reconnect flow"
     );
-    WsRouter.instance.handle("leave", ws, null);
+    WsRouter.instance.handle(CLIENT_MESSAGE.LEAVE, ws, null);
   });
 });
 

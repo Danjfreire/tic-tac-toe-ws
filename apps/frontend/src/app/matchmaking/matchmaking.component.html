@@ -4,6 +4,7 @@
   <div>Online users: {{ userService.userCount$ | async }}</div>
 
   @if (!findingMatch) {
+    <!-- Start Matchmaking -->
     <button class="btn btn-primary mb-2 w-80" (click)="findMatch()">
       Find Match
     </button>
@@ -11,14 +12,28 @@
       Disconnect
     </button>
   } @else {
-    <div class="text-2xl mb-4">Finding match...</div>
-    <div
-      class="flex border rounded-lg w-64 text-lg items-center justify-center p-2 mb-2"
-    >
-      {{ matchmakingTimer | duration }}
-    </div>
-    <button class="btn btn-primary text-sm" (click)="cancelMatchmaking()">
-      Cancel
-    </button>
+    @if (matchMakingService.matchFound$ | async; as match) {
+      <!-- Match found! -->
+      <div class="text-3xl mb-4">Match found!</div>
+      <div
+        class="flex border rounded-lg w-64 text-lg items-center justify-center p-2 mb-2"
+      >
+        {{ match.timer | duration }}
+      </div>
+      <button class="btn btn-primary mb-2 w-80" (click)="acceptMatch(match.id)">
+        Start Game
+      </button>
+    } @else {
+      <!-- Finding Match -->
+      <div class="text-2xl mb-4">Finding match...</div>
+      <div
+        class="flex border rounded-lg w-64 text-lg items-center justify-center p-2 mb-2"
+      >
+        {{ matchmakingTimer | duration }}
+      </div>
+      <button class="btn btn-primary text-sm" (click)="cancelMatchmaking()">
+        Cancel
+      </button>
+    }
   }
 </div>

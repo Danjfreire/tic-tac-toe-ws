@@ -3,6 +3,7 @@ import { WebsocketService } from './websocket.service';
 import { v4 as uuid } from 'uuid';
 import { BehaviorSubject } from 'rxjs';
 import { User } from '@repo/types/user';
+import { CLIENT_MESSAGE, SERVER_MESSAGE } from '@repo/types/message';
 
 @Injectable({
   providedIn: 'root',
@@ -16,9 +17,12 @@ export class UserService {
   public user$ = this.user.asObservable();
 
   constructor() {
-    this.wsService.on('join-success', this.onJoinSuccess.bind(this));
-    this.wsService.on('leave-success', this.onLeaveSuccess.bind(this));
-    this.wsService.on('users-online', this.updateUserCount.bind(this));
+    this.wsService.on(SERVER_MESSAGE.JOINED, this.onJoinSuccess.bind(this));
+    this.wsService.on(SERVER_MESSAGE.LEFT, this.onLeaveSuccess.bind(this));
+    this.wsService.on(
+      SERVER_MESSAGE.USERS_ONLINE,
+      this.updateUserCount.bind(this),
+    );
 
     this.wsService.status$.subscribe((connected) => {
       if (connected === false) {
@@ -33,14 +37,14 @@ export class UserService {
 
   join(name: string) {
     this.wsService.send({
-      type: 'join',
+      type: CLIENT_MESSAGE.JOIN,
       payload: { id: uuid(), displayName: name },
     });
   }
 
   leave() {
     this.wsService.send({
-      type: 'leave',
+      type: CLIENT_MESSAGE.LEAVE,
       payload: { id: this.user.value?.id },
     });
   }
