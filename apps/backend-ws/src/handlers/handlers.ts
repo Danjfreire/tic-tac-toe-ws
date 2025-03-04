@@ -20,3 +20,7 @@ WsRouter.instance.on(CLIENT_MESSAGE.MATCHMAKING_START, (ws, data) => {
 WsRouter.instance.on(CLIENT_MESSAGE.MATCHMAKING_CANCEL, (ws, data) => {
   MatchmakingService.instance.cancelMatchmaking(ws, data);
 });
+
+WsRouter.instance.on(CLIENT_MESSAGE.MATCHMAKING_ACCEPT, (ws, data) => {
+  MatchmakingService.instance.acceptMatch(ws, data);
+});

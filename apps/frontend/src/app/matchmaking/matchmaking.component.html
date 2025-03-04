@@ -12,16 +12,24 @@
       Disconnect
     </button>
   } @else {
-    @if (matchMakingService.matchFound$ | async; as match) {
+    @if (matchMakingService.matchFound$ | async; as confirmation) {
       <!-- Match found! -->
       <div class="text-3xl mb-4">Match found!</div>
       <div
-        class="flex border rounded-lg w-64 text-lg items-center justify-center p-2 mb-2"
+        class="flex flex-col border rounded-lg w-64 text-lg items-center justify-center p-2 mb-2"
       >
-        {{ match.timer | duration }}
+        <div>
+          Players accepted: {{ confirmation.match.playersAccepted.length }}
+        </div>
+        <div>
+          {{ confirmation.timer | duration }}
+        </div>
       </div>
-      <button class="btn btn-primary mb-2 w-80" (click)="acceptMatch(match.id)">
-        Start Game
+      <button
+        class="btn btn-primary mb-2 w-80"
+        (click)="acceptMatch(confirmation.match.id)"
+      >
+        Accept Match
       </button>
     } @else {
       <!-- Finding Match -->

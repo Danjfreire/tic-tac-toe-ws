@@ -61,13 +61,13 @@ export class MatchService {
     messageType: "match-started" | "match-update",
     match: Match
   ) {
-    const matchStartedMessage: ServerMessage = {
-      type: messageType,
-      payload: match.state,
-    };
-    const matchStartedMessageString = JSON.stringify(matchStartedMessage);
-    match.playerSockets.forEach((ws) => {
-      ws.send(matchStartedMessageString);
-    });
+    // const matchStartedMessage: ServerMessage = {
+    //   type: messageType,
+    //   payload: match.state,
+    // };
+    // const matchStartedMessageString = JSON.stringify(matchStartedMessage);
+    // match.playerSockets.forEach((ws) => {
+    //   ws.send(matchStartedMessageString);
+    // });
   }
 }

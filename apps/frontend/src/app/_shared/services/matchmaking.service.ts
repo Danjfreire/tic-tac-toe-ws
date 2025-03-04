@@ -7,8 +7,13 @@ import {
 } from '@repo/types/message';
 import { User } from '@repo/types/user';
 import { BehaviorSubject } from 'rxjs';
+import {
+  MatchConfirmation,
+  MatchmakingAccept,
+  validateMatchConfirmation,
+} from '@repo/types/matchmaking';
 
-const ACCEPT_MATCH_TIMER = 10;
+const ACCEPT_MATCH_TIMER = 15;
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +21,7 @@ const ACCEPT_MATCH_TIMER = 10;
 export class MatchMakingService {
   private wsService: WebsocketService = inject(WebsocketService);
   private matchFound = new BehaviorSubject<{
-    id: string;
+    match: MatchConfirmation;
     timer: number;
   } | null>(null);
   private acceptMatchIntervalId!: number;
@@ -24,6 +29,11 @@ export class MatchMakingService {
   public matchFound$ = this.matchFound.asObservable();
 
   constructor() {
+    console.log('Server Messages is', SERVER_MESSAGE);
+    this.wsService.on(
+      SERVER_MESSAGE.MATCHMAKING_UPDATE,
+      this.onMatchmakingUpdate.bind(this),
+    );
     this.wsService.on(
       SERVER_MESSAGE.MATCHMAKING_FOUND,
       this.onMatchFound.bind(this),
@@ -49,10 +59,44 @@ export class MatchMakingService {
     this.wsService.send(message);
   }
 
-  private onMatchFound(data: any) {
-    if (!data.matchId) return;
+  acceptMatch(matchId: string, user: User) {
+    const payload: MatchmakingAccept = {
+      matchId,
+      user,
+    };
+    const message: ClientMessage = {
+      type: CLIENT_MESSAGE.MATCHMAKING_ACCEPT,
+      payload,
+    };
 
-    this.matchFound.next({ id: data.matchId, timer: ACCEPT_MATCH_TIMER });
+    this.wsService.send(message);
+  }
+
+  private onMatchmakingUpdate(data: any) {
+    console.log('matchmaking update');
+    const confirmation = validateMatchConfirmation(data);
+
+    if (!confirmation) return;
+
+    const matchFound = this.matchFound.value;
+
+    if (!matchFound || matchFound.match.id !== confirmation.id) {
+      return;
+    }
+
+    matchFound.match.playersAccepted = confirmation.playersAccepted;
+
+    this.matchFound.next(matchFound);
+  }
+
+  private onMatchFound(data: any) {
+    const confirmation = validateMatchConfirmation(data);
+    console.log(confirmation);
+
+    if (!confirmation) return;
+
+    const matchdFoundValue = { match: confirmation, timer: ACCEPT_MATCH_TIMER };
+    this.matchFound.next(matchdFoundValue);
 
     this.acceptMatchIntervalId = window.setInterval(() => {
       const match = this.matchFound.value;
@@ -63,7 +107,8 @@ export class MatchMakingService {
         return;
       }
 
-      this.matchFound.next({ id: match.id, timer: match.timer - 1 });
+      matchdFoundValue.timer = match.timer - 1;
+      this.matchFound.next(matchdFoundValue);
     }, 1000);
   }
 }

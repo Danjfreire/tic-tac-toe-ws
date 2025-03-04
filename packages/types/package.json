@@ -17,6 +17,10 @@
     "./match": {
       "types": "./src/match-types.ts",
       "default": "./dist/match-types.js"
+    },
+    "./matchmaking": {
+      "types": "./src/matchmaking-types.ts",
+      "default": "./dist/matchmaking-types.js"
     }
   },
   "devDependencies": {

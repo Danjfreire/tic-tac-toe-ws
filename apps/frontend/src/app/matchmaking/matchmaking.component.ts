@@ -54,7 +54,7 @@ export class MatchmakingComponent implements OnInit {
   }
 
   acceptMatch(matchId: string) {
-    console.log('Trying to start match with id', matchId);
+    this.matchMakingService.acceptMatch(matchId, this.user);
   }
 
   disconnect() {

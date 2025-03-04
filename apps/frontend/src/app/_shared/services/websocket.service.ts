@@ -30,6 +30,7 @@ export class WebsocketService {
     }
 
     this.handlers.get(msgType)?.push(callback);
+    console.log('Added handler for message type:', msgType);
   }
 
   connect(url = 'ws://localhost:8080'): void {

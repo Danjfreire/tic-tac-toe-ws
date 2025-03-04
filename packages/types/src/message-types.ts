@@ -7,6 +7,7 @@ export const CLIENT_MESSAGE = {
   LEAVE: "connection:leave",
   MATCHMAKING_START: "matchmaking:start",
   MATCHMAKING_CANCEL: "matchmaking:cancel",
+  MATCHMAKING_ACCEPT: "matchmaking:accept",
 } as const;
 
 export const ClientMessageTypeSchema = z.nativeEnum(CLIENT_MESSAGE);
@@ -35,6 +36,7 @@ export const SERVER_MESSAGE = {
   JOINED: "connection:joined",
   LEFT: "connection:left",
   USERS_ONLINE: "system:users-online",
+  MATCHMAKING_UPDATE: "matchmaking:update",
   MATCHMAKING_FOUND: "matchmaking:found",
   MATCH_STARTED: "match:started",
 } as const;
